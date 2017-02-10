@@ -27,8 +27,8 @@ class UserProfile(AbstractUser):
 class EmailVerifyRecord(models.Model):
     code = models.CharField(verbose_name=u"验证码", max_length=20)
     email = models.EmailField(verbose_name=u"邮箱", max_length=50)
-    send_typle = models.CharField(choices=(("register", u"注册"), ("forget", u"忘记密码")), max_length=10)
-    send_time = models.DateField(default=datetime.now)
+    send_type = models.CharField(choices=(("register", u"注册"), ("forget", u"忘记密码")), max_length=10)
+    send_time = models.DateTimeField(u"发送时间", default=datetime.now)
 
     class Meta:
         verbose_name = u"邮箱验证码"
@@ -40,7 +40,7 @@ class Banner(models.Model):
     image = models.ImageField(verbose_name=u"轮播图", upload_to="banner/%Y/%m", max_length=100)
     url = models.URLField(verbose_name=u"访问地址", max_length=200)
     index = models.IntegerField(verbose_name=u"顺序", default=100)
-    add_time = models.DateField(verbose_name=u"添加时间", default=datetime.now)
+    add_time = models.DateTimeField(verbose_name=u"添加时间", default=datetime.now)
 
     class Meta:
         verbose_name = u"轮播图"
