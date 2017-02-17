@@ -18,6 +18,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import TemplateView
 from users.views import LoginView, RegisterView, ActiveUserView, ForgetPwdView, ResetPwdView, ModifyPwdView
+from organization.views import OrgView
 import xadmin
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
@@ -29,4 +30,6 @@ urlpatterns = [
     url(r'^forgetpwd/$', ForgetPwdView.as_view(), name="forget_pwd"),
     url(r'^reset/(?P<reset_code>.*)/$', ResetPwdView.as_view(), name="reset_pwd"),
     url(r'^modify_pwd/$', ModifyPwdView.as_view(), name="modify_pwd"),
+
+    url(r'^org_list/$', OrgView.as_view(), name="org_list"),
 ]

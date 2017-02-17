@@ -14,9 +14,9 @@ class CityDictAdmin(object):
 
 
 class CourseOrgAdmin(object):
-    list_display = ['name', 'click_nums', 'fav_nums', 'address', 'city', 'add_time']
-    search_fields = ['name', 'click_nums', 'fav_nums', 'address', 'city__name']
-    list_filter = ['name', 'click_nums', 'fav_nums', 'address', 'city__name', 'add_time']
+    list_display = ['name', 'category', 'click_nums', 'fav_nums', 'address', 'city', 'add_time']
+    search_fields = ['name', 'category', 'click_nums', 'fav_nums', 'address', 'city__name']
+    list_filter = ['name', 'category', 'click_nums', 'fav_nums', 'address', 'city__name', 'add_time']
 
 
 class TeacherAdmin(object):

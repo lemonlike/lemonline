@@ -146,3 +146,6 @@ EMAIL_HOST_USER = "lemonyolo@sina.com"
 EMAIL_HOST_PASSWORD = "liuminglei123"
 EMAIL_USE_TLS = False
 EMAIL_FROM = "lemonyolo@sina.com"
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
