@@ -27,6 +27,8 @@ class CourseOrg(models.Model):
     desc = models.TextField(verbose_name=u"机构描述")
     click_nums = models.IntegerField(verbose_name=u"点击量", default=0)
     fav_nums = models.IntegerField(verbose_name=u"收藏数", default=0)
+    students = models.IntegerField(verbose_name=u"学习人数", default=0)
+    course_nums = models.IntegerField(verbose_name=u"课程数", default=0)
     image = models.ImageField(verbose_name=u"logo", upload_to="org/%Y/%m", max_length=100)
     address = models.CharField(verbose_name=u"机构地址", max_length=150)
     city = models.ForeignKey(CityDict, verbose_name=u"所在城市")
