@@ -4,7 +4,7 @@ from datetime import datetime
 
 from django.db import models
 
-
+from organization.models import CourseOrg
 # Create your models here.
 
 
@@ -18,6 +18,7 @@ class Course(models.Model):
     fav_nums = models.IntegerField(verbose_name=u"收藏人数", default=0)
     image = models.ImageField(verbose_name=u"封面图", upload_to="courses/%Y/%m", max_length=100)
     click_nums = models.IntegerField(verbose_name=u"点击量", default=0)
+    course_org = models.ForeignKey(CourseOrg, verbose_name=u"课程机构", null=True, blank=True)
     add_time = models.DateTimeField(verbose_name=u"添加时间", default=datetime.now)
 
     class Meta:
