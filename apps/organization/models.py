@@ -45,6 +45,7 @@ class CourseOrg(models.Model):
 class Teacher(models.Model):
     org = models.ForeignKey(CourseOrg, verbose_name=u"所属机构")
     name = models.CharField(verbose_name=u"教师名", max_length=20)
+    image = models.ImageField(verbose_name=u"头像", upload_to="teacher/%Y/m", max_length=100, default='')
     work_years = models.IntegerField(verbose_name=u"工作年限", default=0)
     work_company = models.CharField(verbose_name=u"就职公司", max_length=50)
     work_position = models.CharField(verbose_name=u"公司职位", max_length=50)
