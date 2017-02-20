@@ -36,3 +36,23 @@ class CourseListView(View):
             "sort": sort,
             "hot_courses": hot_courses
         })
+
+
+class CourseDetailView(View):
+    def get(self, request, course_id):
+        course = Course.objects.get(id=int(course_id))
+
+        # 课程点击数自增
+        course.click_nums += 1
+        course.save()
+
+        # 相关课程推荐
+        tag = course.tag
+        if tag:
+            relate_courses = Course.objects.filter(tag=tag)[:2]
+        else:
+            relate_courses = []
+        return render(request, "course-detail.html", {
+            "course": course,
+            "relate_courses": relate_courses,
+        })

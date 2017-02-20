@@ -18,12 +18,22 @@ class Course(models.Model):
     fav_nums = models.IntegerField(verbose_name=u"收藏人数", default=0)
     image = models.ImageField(verbose_name=u"封面图", upload_to="courses/%Y/%m", max_length=100)
     click_nums = models.IntegerField(verbose_name=u"点击量", default=0)
+    category = models.CharField(verbose_name=u"课程类别", max_length=20, default=u"后端开发")
+    tag = models.CharField(verbose_name=u"课程标签", max_length=10, default="")
     course_org = models.ForeignKey(CourseOrg, verbose_name=u"课程机构", null=True, blank=True)
     add_time = models.DateTimeField(verbose_name=u"添加时间", default=datetime.now)
 
     class Meta:
         verbose_name = u"课程"
         verbose_name_plural = verbose_name
+
+    def get_lesson_nums(self):
+        # 获取章节数
+        return self.lesson_set.all().count()
+
+    def get_learn_users(self):
+        # 获取学习用户
+        return self.usercourse_set.all()
 
     def __unicode__(self):
         return self.name
