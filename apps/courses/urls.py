@@ -4,7 +4,7 @@ __date__ = '2017/2/19 16:01'
 
 from django.conf.urls import url
 
-from .views import CourseListView, CourseDetailView
+from .views import CourseListView, CourseDetailView, LessonView
 
 urlpatterns = [
     # 课程列表页
@@ -12,4 +12,7 @@ urlpatterns = [
 
     # 课程详情页
     url(r'^detail/(?P<course_id>\d+)/$', CourseDetailView.as_view(), name="detail"),
+
+    # 章节详情页
+    url(r'^lesson/(?P<course_id>\d+)/$', LessonView.as_view(), name="lesson"),
 ]

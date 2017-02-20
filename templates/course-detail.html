@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 
-{% block title %}公开课列表页 - 慕学在线网{% endblock %}
+{% block title %}课程详情页 - 慕学在线网{% endblock %}
 
 {% block custom_bread %}
     <section>
@@ -54,9 +54,9 @@
                             </ul>
                             <div class="btns">
                                 <div class="btn colectgroupbtn" id="jsLeftBtn">
-                                    收藏
+                                    {% if has_fav_course %}已收藏{% else %}收藏{% endif %}
                                 </div>
-                                <div class="buy btn"><a style="color: white" href="course-video.html">开始学习</a></div>
+                                <div class="buy btn"><a style="color: white" href="{% url 'course:lesson' course.id %}">开始学习</a></div>
                             </div>
                         </div>
                         <div class="group-share-box">
@@ -89,7 +89,7 @@
                             <h2 class="center" title="清华大学">{{ course.course_org.name }}</h2>
                         </a>
                         <div class="btn  notlogin" data-favid="14" id="jsRightBtn">
-                            收藏
+                            {% if has_fav_org %}已收藏{% else %}收藏{% endif %}
                         </div>
                         <div class="clear">
                             <ul>
