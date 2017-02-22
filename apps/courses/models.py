@@ -21,6 +21,8 @@ class Course(models.Model):
     click_nums = models.IntegerField(verbose_name=u"点击量", default=0)
     category = models.CharField(verbose_name=u"课程类别", max_length=20, default=u"后端开发")
     tag = models.CharField(verbose_name=u"课程标签", max_length=10, default="")
+    need_know = models.CharField(verbose_name=u"课程须知", max_length=300, default="")
+    teacher_tell = models.CharField(verbose_name=u"老师告诉你", max_length=300, default="")
     course_org = models.ForeignKey(CourseOrg, verbose_name=u"课程机构", null=True, blank=True)
     add_time = models.DateTimeField(verbose_name=u"添加时间", default=datetime.now)
 
@@ -84,3 +86,6 @@ class CourseResource(models.Model):
     class Meta:
         verbose_name = u"课程资源"
         verbose_name_plural = verbose_name
+
+    def __unicode__(self):
+        return self.name
