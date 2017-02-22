@@ -8,6 +8,8 @@ from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Course, CourseResource
 from operation.models import UserFavorite, CourseComments, UserCourse
+from utils.mixin_utils import LoginRequiredMixin
+
 
 # Create your views here.
 
@@ -72,12 +74,19 @@ class CourseDetailView(View):
         })
 
 
-class LessonView(View):
+class LessonView(LoginRequiredMixin, View):
     """
     章节详情页
     """
+
     def get(self, request, course_id):
         course = Course.objects.get(id=int(course_id))
+
+        # 查询用户是否已经关联了该课程
+        user_courses = UserCourse.objects.filter(user=request.user, course=course)
+        if not user_courses:
+            user_course = UserCourse(user=request.user, course=course)
+            user_course.save()
 
         # 学过该课程的人还学过哪些课程
 
@@ -97,18 +106,31 @@ class LessonView(View):
         })
 
 
-class CommentsView(View):
+class CommentsView(LoginRequiredMixin, View):
     """
     课程评论页
     """
+
     def get(self, request, course_id):
         course = Course.objects.get(id=int(course_id))
+
+        # 学过该课程的人还学过哪些课程
+
+        user_courses = UserCourse.objects.filter(course=course)
+        # 取到学习过该课程的人的所有id
+        user_ids = [user_course.user.id for user_course in user_courses]
+        # 取到学习过该课程人还学习过的课程
+        all_user_courses = UserCourse.objects.filter(user_id__in=user_ids)
+        course_ids = [user_course.course.id for user_course in all_user_courses]
+        relate_courses = Course.objects.filter(id__in=course_ids).order_by("-click_nums")[:5]
+
         all_resource = CourseResource.objects.filter(course=course)
         all_comments = CourseComments.objects.filter(course=course).order_by("-add_time")
         return render(request, "course-comment.html", {
             "course": course,
             "course_resources": all_resource,
             "course_comments": all_comments,
+            "relate_courses": relate_courses,
         })
 
 
@@ -116,6 +138,7 @@ class AddCommentsView(View):
     """
     用户添加评论
     """
+
     def post(self, request):
         if not request.user.is_authenticated():
             # 判断用户登陆状态
