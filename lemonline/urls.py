@@ -41,7 +41,7 @@ urlpatterns = [
     url(r'^course/', include('courses.urls', namespace="course")),
 
     # 用户相关url配置
-    url(r'^user/', include('users.urls', namespace="user")),
+    url(r'^users/', include('users.urls', namespace="users")),
 
 
     # 配置处理上传文件的访问处理函数

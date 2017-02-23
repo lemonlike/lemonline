@@ -13,7 +13,7 @@
 			<div class="inforcon">
 				<div class="left" style="width:242px;">
                     <iframe id='frameFile' name='frameFile' style='display: none;'></iframe>
-                    <form class="clearfix" id="jsAvatarForm" enctype="multipart/form-data" autocomplete="off" method="post" action="{% url 'user:image_upload' %}" target='frameFile'>
+                    <form class="clearfix" id="jsAvatarForm" enctype="multipart/form-data" autocomplete="off" method="post" action="{% url 'users:image_upload' %}" target='frameFile'>
                         <label class="changearea" for="avatarUp">
                             <span id="avatardiv" class="pic">
                                 <img width="100" height="100" class="js-img-show" id="avatarShow" src="{{ MEDIA_URL }}{{ request.user.image }}"/>

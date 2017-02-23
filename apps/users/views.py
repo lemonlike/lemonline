@@ -6,6 +6,7 @@ from django.db.models import Q
 from django.views.generic.base import View
 from django.contrib.auth.hashers import make_password
 from django.http import HttpResponse
+import json
 
 from .models import UserProfile, EmailVerifyRecord
 from .forms import LoginForm, RegisterForm, ForgetForm, ModifyForm, ImageUploadForm
@@ -161,14 +162,14 @@ class UpdatePwdView(View):
             pwd1 = request.POST.get("password1", "")
             pwd2 = request.POST.get("password2", "")
             if pwd1 != pwd2:
-                return HttpResponse('{"status":"fail","msg":"密码不一致"}', content_type="application/json")
+                return HttpResponse('{"status":"fail","msg":"密码不一致"}', content_type='application/json')
 
             user = request.user
             user.password = make_password(pwd2)
             user.save()
-            return HttpResponse('{"status":"success"}', content_type="application/json")
+            return HttpResponse('{"status":"success"}', content_type='application/json')
 
         else:
-            return HttpResponse('{"status":"fail","msg":"填写错误"}', content_type="application/json")
+            return HttpResponse(json.dumps(modify_form.errors), content_type='application/json')
 
 
