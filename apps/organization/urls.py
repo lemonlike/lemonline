@@ -2,7 +2,7 @@
 __author__ = 'lemon'
 __date__ = '2017/2/18 15:16'
 
-from django.conf.urls import url, include
+from django.conf.urls import url
 
 from .views import OrgView, AddUserAskView, OrgHomeView, OrgCourseView, OrgDescView, OrgTeacherView, AddFavView, \
     TeacherListView, TeacherDetailView
