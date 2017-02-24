@@ -28,7 +28,9 @@ class UserProfile(AbstractUser):
 class EmailVerifyRecord(models.Model):
     code = models.CharField(verbose_name=u"验证码", max_length=20)
     email = models.EmailField(verbose_name=u"邮箱", max_length=50)
-    send_type = models.CharField(verbose_name=u"验证码类型", choices=(("register", u"注册"), ("forget", u"忘记密码")), max_length=10)
+    send_type = models.CharField(verbose_name=u"验证码类型",
+                                 choices=(("register", u"注册"), ("forget", u"忘记密码"),
+                                          ("update_email", u"修改邮箱")), max_length=15)
     send_time = models.DateTimeField(u"发送时间", default=datetime.now)
 
     class Meta:

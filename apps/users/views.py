@@ -9,7 +9,7 @@ from django.http import HttpResponse
 import json
 
 from .models import UserProfile, EmailVerifyRecord
-from .forms import LoginForm, RegisterForm, ForgetForm, ModifyForm, ImageUploadForm
+from .forms import LoginForm, RegisterForm, ForgetForm, ModifyForm, ImageUploadForm, UserInfoForm
 from utils.email_send import send_email
 from utils.mixin_utils import LoginRequiredMixin
 # Create your views here.
@@ -134,9 +134,20 @@ class ModifyPwdView(View):
 
 
 class UserInfoView(LoginRequiredMixin,View):
+    """
+    显示个人资料及修改个人资料
+    """
     def get(self, request):
-
         return render(request, "usercenter-info.html", {})
+
+    def post(self, request):
+        user_info_form = UserInfoForm(request.POST, instance=request.user)
+        if user_info_form.is_valid():
+            request.user.save()
+            return HttpResponse('{"status":"success"}', content_type="application/json")
+        else:
+            return HttpResponse(json.dumps(user_info_form.errors), content_type='application/json')
+
 
 
 class ImageUploadView(LoginRequiredMixin, View):
@@ -171,5 +182,37 @@ class UpdatePwdView(View):
 
         else:
             return HttpResponse(json.dumps(modify_form.errors), content_type='application/json')
+
+
+class SendEmailCodeView(LoginRequiredMixin,View):
+    """
+    发送邮箱验证码
+    """
+    def get(self, request):
+        email = request.GET.get("email", '')
+
+        if UserProfile.objects.filter(email=email):
+            return HttpResponse('{"email":"邮箱已存在"}', content_type='application/json')
+
+        send_email(email, "update_email")
+        return HttpResponse('{"status":"success"}', content_type='application/json')
+
+
+class UpdateEmailView(View):
+    """
+    个人中心修改邮箱
+    """
+    def post(self, request):
+        email = request.POST.get("email", '')
+        code = request.POST.get("code", '')
+
+        exsited_records = EmailVerifyRecord.objects.filter(code=code, email=email, send_type="update_email")
+        if exsited_records:
+            user = request.user
+            user.email = email
+            user.save()
+            return HttpResponse('{"status":"success"}', content_type='application/json')
+        else:
+            return HttpResponse('{"email":"验证码错误"}', content_type='application/json')
 
 
