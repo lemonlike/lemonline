@@ -26,8 +26,8 @@ class ForgetForm(forms.Form):
 
 
 class ModifyForm(forms.Form):
-    password1 = forms.CharField(required=True, min_length=5)
-    password2 = forms.CharField(required=True, min_length=5)
+    password1 = forms.CharField(required=True, min_length=6)
+    password2 = forms.CharField(required=True, min_length=6)
 
 
 class ImageUploadForm(forms.ModelForm):
