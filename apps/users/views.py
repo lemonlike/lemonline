@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
 from django.views.generic.base import View
 from django.contrib.auth.hashers import make_password
 from django.http import HttpResponse
 import json
+from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import UserProfile, EmailVerifyRecord
 from .forms import LoginForm, RegisterForm, ForgetForm, ModifyForm, ImageUploadForm, UserInfoForm
 from utils.email_send import send_email
 from utils.mixin_utils import LoginRequiredMixin
+from operation.models import UserCourse, UserFavorite, UserMessage
+from organization.models import CourseOrg, Teacher
+from courses.models import Course
 # Create your views here.
 
 
@@ -58,6 +62,12 @@ class RegisterView(View):
             user_profile.is_active = False
             user_profile.save()
 
+            # 写入注册欢迎消息
+            user_message = UserMessage()
+            user_message.user = user_profile.id
+            user_message.message = "欢迎您的注册"
+            user_message.save()
+
             send_email(user_email, "register")
             return render(request, "login.html")
         else:
@@ -84,6 +94,11 @@ class LoginView(View):
                 return render(request, "login.html", {"msg": u"用户名或密码错误"})
         else:
             return render(request, "login.html", {"login_form": login_form})
+
+
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
 
 
 class ForgetPwdView(View):
@@ -215,4 +230,82 @@ class UpdateEmailView(View):
         else:
             return HttpResponse('{"email":"验证码错误"}', content_type='application/json')
 
+
+class MycourseView(LoginRequiredMixin, View):
+    """
+    我的课程
+    """
+    def get(self, request):
+        user_courses = UserCourse.objects.filter(user=request.user)
+        return render(request, "usercenter-mycourse.html", {
+            "user_courses": user_courses
+        })
+
+
+class MyFavOrgView(LoginRequiredMixin, View):
+    """
+    我收藏的课程机构
+    """
+    def get(self, request):
+        org_list = []
+        fav_orgs = UserFavorite.objects.filter(user=request.user, fav_type=2)
+        for fav_org in fav_orgs:
+            org_id = fav_org.fav_id
+            org = CourseOrg.objects.get(id=org_id)
+            org_list.append(org)
+
+        return render(request, "usercenter-fav-org.html", {
+            "org_list": org_list
+        })
+
+
+class MyFavTeacherView(LoginRequiredMixin, View):
+    """
+    我收藏的讲师
+    """
+    def get(self, request):
+        teacher_list = []
+        fav_teachers = UserFavorite.objects.filter(user=request.user, fav_type=3)
+        for fav_teacher in fav_teachers:
+            teacher_id = fav_teacher.fav_id
+            teacher = Teacher.objects.get(id=teacher_id)
+            teacher_list.append(teacher)
+
+        return render(request, "usercenter-fav-teacher.html", {
+            "teacher_list": teacher_list
+        })
+
+
+class MyFavCourseView(LoginRequiredMixin, View):
+    """
+    我收藏的课程
+    """
+    def get(self, request):
+        course_list = []
+        fav_courses = UserFavorite.objects.filter(user=request.user, fav_type=1)
+        for fav_course in fav_courses:
+            course_id = fav_course.fav_id
+            course = Course.objects.get(id=course_id)
+            course_list.append(course)
+
+        return render(request, "usercenter-fav-course.html", {
+            "course_list": course_list
+        })
+
+
+class MyMessageView(LoginRequiredMixin, View):
+    def get(self, request):
+        all_messages = UserMessage.objects.filter(name=request.user.id)
+
+        # 对用户消息进行分页
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+
+        p = Paginator(all_messages, 5, request=request)
+        messages = p.page(page)
+        return render(request, "usercenter-message.html", {
+            "all_messages": messages
+        })
 
