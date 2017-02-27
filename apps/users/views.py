@@ -5,11 +5,12 @@ from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
 from django.views.generic.base import View
 from django.contrib.auth.hashers import make_password
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 import json
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
+from django.core.urlresolvers import reverse
 
-from .models import UserProfile, EmailVerifyRecord
+from .models import UserProfile, EmailVerifyRecord, Banner
 from .forms import LoginForm, RegisterForm, ForgetForm, ModifyForm, ImageUploadForm, UserInfoForm
 from utils.email_send import send_email
 from utils.mixin_utils import LoginRequiredMixin
@@ -87,7 +88,7 @@ class LoginView(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return render(request, "index.html")
+                    return HttpResponseRedirect(reverse("index"))
                 else:
                     return render(request, "login.html", {"msg": u"用户未激活"})
             else:
@@ -97,8 +98,12 @@ class LoginView(View):
 
 
 class LogoutView(View):
+    """
+    用户登出
+    """
     def get(self, request):
         logout(request)
+        return HttpResponseRedirect(reverse("index"))
 
 
 class ForgetPwdView(View):
@@ -309,3 +314,19 @@ class MyMessageView(LoginRequiredMixin, View):
             "all_messages": messages
         })
 
+
+class IndexView(View):
+    """
+    网站首页
+    """
+    def get(self, request):
+        all_banners = Banner.objects.all().order_by("index")
+        courses = Course.objects.all()[:5]
+        banner_courses = Course.objects.all().order_by("-click_nums")[:3]
+        all_org = CourseOrg.objects.all()[:15]
+        return render(request, "index.html", {
+            "all_banners": all_banners,
+            "courses": courses,
+            "banner_courses": banner_courses,
+            "all_org":all_org
+        })

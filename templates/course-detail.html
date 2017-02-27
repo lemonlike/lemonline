@@ -56,7 +56,8 @@
                                 <div class="btn colectgroupbtn" id="jsLeftBtn">
                                     {% if has_fav_course %}已收藏{% else %}收藏{% endif %}
                                 </div>
-                                <div class="buy btn"><a style="color: white" href="{% url 'course:lesson' course.id %}">开始学习</a></div>
+                                <div class="buy btn"><a style="color: white" href="{% url 'course:lesson' course.id %}">开始学习</a>
+                                </div>
                             </div>
                         </div>
                         <div class="group-share-box">
@@ -121,9 +122,9 @@
                         </ul>
                     </div>
                     <div class="tab_cont tab_cont1">
-
-                        {{ course.detail }}
-
+                        {% autoescape off %}
+                            {{ course.detail }}
+                        {% endautoescape %}
                     </div>
                     <div class="tab_cont tab_cont2">
                         <div class="comment">
@@ -146,7 +147,8 @@
                                     </a>
                                 </dt>
                                 <dd>
-                                    <a target="_blank" href="{% url 'course:detail' relate_course.id %}"><h2>{{ relate_course.name }}</h2></a>
+                                    <a target="_blank" href="{% url 'course:detail' relate_course.id %}">
+                                        <h2>{{ relate_course.name }}</h2></a>
                                     <span class="fl">学习时长：<i class="key">{{ relate_course.learn_time }}</i></span>
                                 </dd>
                             </dl>
@@ -160,44 +162,44 @@
     </section>
 
     {% block custom_js %}
-<script type="text/javascript">
-    //收藏分享
-    function add_fav(current_elem, fav_id, fav_type) {
-        $.ajax({
-            cache: false,
-            type: "POST",
-            url: "{% url 'org:add_fav' %}",
-            data: {'fav_id': fav_id, 'fav_type': fav_type},
-            async: true,
-            beforeSend: function (xhr, settings) {
-                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
-            },
-            success: function (data) {
-                if (data.status == 'fail') {
-                    if (data.msg == '用户未登录') {
-                        window.location.href = "/login/";
-                    } else {
-                        alert(data.msg)
+        <script type="text/javascript">
+            //收藏分享
+            function add_fav(current_elem, fav_id, fav_type) {
+                $.ajax({
+                    cache: false,
+                    type: "POST",
+                    url: "{% url 'org:add_fav' %}",
+                    data: {'fav_id': fav_id, 'fav_type': fav_type},
+                    async: true,
+                    beforeSend: function (xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+                    },
+                    success: function (data) {
+                        if (data.status == 'fail') {
+                            if (data.msg == '用户未登录') {
+                                window.location.href = "/login/";
+                            } else {
+                                alert(data.msg)
+                            }
+
+                        } else if (data.status == 'success') {
+                            current_elem.text(data.msg)
+                        }
                     }
-
-                } else if (data.status == 'success') {
-                    current_elem.text(data.msg)
-                }
+                });
             }
-        });
-    }
 
-    $('#jsLeftBtn').on('click', function () {
-        add_fav($(this), {{ course.id }}, 1);
-    });
+            $('#jsLeftBtn').on('click', function () {
+                add_fav($(this), {{ course.id }}, 1);
+            });
 
-    $('#jsRightBtn').on('click', function () {
-        add_fav($(this), {{ course.course_org.id }}, 2);
-    });
+            $('#jsRightBtn').on('click', function () {
+                add_fav($(this), {{ course.course_org.id }}, 2);
+            });
 
 
-</script>
-{% endblock %}
+        </script>
+    {% endblock %}
 
 {% endblock %}
 

@@ -21,11 +21,12 @@ from django.views.generic import TemplateView
 from django.views.static import serve
 
 from users.views import LoginView, RegisterView, ActiveUserView, ForgetPwdView, ResetPwdView, ModifyPwdView, LogoutView
+from users.views import IndexView
 from settings import MEDIA_ROOT
 import xadmin
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
-    url(r'^$', TemplateView.as_view(template_name="index.html"), name="index"),
+    url(r'^$', IndexView.as_view(), name="index"),
     url(r'^login/$', LoginView.as_view(), name="login"),
     url(r'^logout/$', LogoutView.as_view(), name="logout"),
     url(r'^register/$', RegisterView.as_view(), name="register"),
@@ -47,5 +48,8 @@ urlpatterns = [
 
     # 配置处理上传文件的访问处理函数
     url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
+
+    # 富文本相关url
+    url(r'^ueditor/',include('DjangoUeditor.urls' )),
 
 ]

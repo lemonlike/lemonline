@@ -7,10 +7,20 @@ import xadmin
 from .models import Course, Lesson, Video, CourseResource
 
 
+class LessonInline(object):
+    model = Lesson
+    extra = 0
+
+
 class CourseAdmin(object):
-    list_display = ['name', 'desc', 'detail', 'degree', 'learn_time', 'students', 'fav_nums', 'click_nums', 'add_time']
-    search_fields = ['name', 'desc', 'detail', 'degree', 'students', 'fav_nums', 'image', 'click_nums']
-    list_filter = ['name', 'desc', 'detail', 'degree', 'learn_time', 'students', 'fav_nums', 'image', 'click_nums', 'add_time']
+    list_display = ['name', 'desc', 'degree', 'learn_time', 'students', 'fav_nums', 'click_nums', 'add_time']
+    search_fields = ['name', 'desc', 'degree', 'students', 'fav_nums', 'image', 'click_nums']
+    list_filter = ['name', 'desc', 'degree', 'learn_time', 'students', 'fav_nums', 'image', 'click_nums', 'add_time']
+    ordering =['-click_nums']
+    readonly_fields = ['click_nums', 'fav_nums']
+    list_editable = ['degree']
+    inlines = [LessonInline]
+    style_fields = {"detail": "ueditor"}
 
 
 class LessonAdmin(object):
