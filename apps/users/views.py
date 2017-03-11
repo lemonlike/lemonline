@@ -169,7 +169,6 @@ class UserInfoView(LoginRequiredMixin,View):
             return HttpResponse(json.dumps(user_info_form.errors), content_type='application/json')
 
 
-
 class ImageUploadView(LoginRequiredMixin, View):
     """
     修改头像，利用ModelForm的特性，简单！

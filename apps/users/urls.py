@@ -35,6 +35,6 @@ urlpatterns = [
     # 我收藏的课程
     url(r'^fav/course/$', MyFavCourseView.as_view(), name="fav_course"),
 
-    # 我收藏的课程
+    # 我的消息
     url(r'^my_message/$', MyMessageView.as_view(), name="my_message"),
 ]
